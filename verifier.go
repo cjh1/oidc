@@ -65,9 +65,14 @@ func (v *Verifier) VerifyRaw(ctx context.Context, audience string, raw string, o
 		return nil, fmt.Errorf("verifying token claims: %v", err)
 	}
 
+	var audienceSlice []string
+	if audience != "" {
+		audienceSlice = []string{audience}
+	}
+
 	if err := cl.Validate(jwt.Expected{
 		Issuer:   v.md.Issuer,
-		Audience: jwt.Audience([]string{audience}),
+		Audience: jwt.Audience(audienceSlice),
 		Time:     time.Now(),
 	}); err != nil {
 		return nil, fmt.Errorf("claim validation: %v", err)
